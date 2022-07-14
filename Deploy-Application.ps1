@@ -187,6 +187,10 @@ Try {
 			Execute-MSI @ExecuteDefaultMSISplat
 		}
 
+		# <Perform Uninstallation tasks here>
+		Write-Log -Message "Attempting to run EOIR uinstaller..." -Source 'Installation' -LogType 'CMTrace'
+		$exitCode = Execute-Process -Path "msiexec.exe" -Parameters "/x{AE6347DA-7678-4F49-A814-8FF1C1B18379} /quiet /norestart /log $Env:windir\Logs\Software\STKEOIR_v12.4.0-uninstall.log" -PassThru
+		If (($exitCode.ExitCode -ne "0") -and ($mainExitCode -ne "3010")) { $mainExitCode = $exitCode.ExitCode }
 
 
 		##*===============================================
@@ -248,8 +252,8 @@ Catch {
 # SIG # Begin signature block
 # MIIU9wYJKoZIhvcNAQcCoIIU6DCCFOQCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUyPSmDO0MM/Fhr6lF8f5sd3/o
-# 1fWgghHXMIIFbzCCBFegAwIBAgIQSPyTtGBVlI02p8mKidaUFjANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUSmrj1V8Fp87+6juSUxfrUhsV
+# LZmgghHXMIIFbzCCBFegAwIBAgIQSPyTtGBVlI02p8mKidaUFjANBgkqhkiG9w0B
 # AQwFADB7MQswCQYDVQQGEwJHQjEbMBkGA1UECAwSR3JlYXRlciBNYW5jaGVzdGVy
 # MRAwDgYDVQQHDAdTYWxmb3JkMRowGAYDVQQKDBFDb21vZG8gQ0EgTGltaXRlZDEh
 # MB8GA1UEAwwYQUFBIENlcnRpZmljYXRlIFNlcnZpY2VzMB4XDTIxMDUyNTAwMDAw
@@ -349,13 +353,13 @@ Catch {
 # ZSBTaWduaW5nIENBIFIzNgIRAKVN33D73PFMVIK48rFyyjEwCQYFKw4DAhoFAKB4
 # MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQB
 # gjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkE
-# MRYEFCNiMk7eYD4u7p1baXfuaEwgFgbdMA0GCSqGSIb3DQEBAQUABIIBgJ1SeZ0k
-# bjvjh0DO0e/rvIe5khE7nHFIsN7ZsyXdl1pMlF8Ndh7KSm4pPUmnTlauaNBbvj9d
-# eiQahfdYDWwe5AFagf7bOZFVjyYeiT5TSySDYd6XDyLPIVSmwXTD1Df9sboi0x+H
-# cvdSKVu3Zv4dcIqJBD2a7fRLbMdyGOVNgkgY5/OPhmtMnlVbo/NJMBLJwdh5xRW7
-# p4pZW6rqG8wdx/MM6TREmivGZt5UL/JS6TT6Bo8KBFFr8iaMLKvVWVoCs2rsMhlf
-# cYAFq5uEdRXrN/YgnBBO7nDeLFP5wRVcFWAw1fR3rLKWOBwnXum8W3Nh0ETrCCMM
-# ldr3FKHTZ8K7+MoyUSm3p/V7B9JhPE7ke9qA8Z9qfHBzeBFWgWscGGxYOzAZSqW+
-# un9ZAXOEa8cIRqpxuP1iKYbf6NCpXSwxi/XL7Je+to43+PrUWN9WD2BjGIJJNhSq
-# 3D+DyElQdNU+Urh/7lmHY0GeKtMiKeD8q5o+MrEIB6c6xOQ9ljs63UvB2A==
+# MRYEFEy6q47gEAfa3nuG8niNkwUSsaNjMA0GCSqGSIb3DQEBAQUABIIBgJXo4+6u
+# NhJYAfOEjxc07GO+Cd3l/C0nyvXSs1RJ/YnpfSA3TaXudkMnPtqB3/zN3DqvCB2S
+# pV5G3+Yj67AVIDze9NjDQRyv/QjsIgpItEZvr18t3eoy+C0Eg7tV/xGt01rDkQOZ
+# EdqcdaB+wKhD6EEYmAfLmxdaDyXYw76eKB8dJWRdsbFy+F8E3iOmXlvWYwV4xtEp
+# KqbcS6I/fKMX3KUwdAKdjfMa9gSI7F0bRzp1BpwpESZ6uJm6cPq7/wklG5ucYkXV
+# 0hh30r+T6L+ZgACfipzmpRV/zqKTNgyQ713vRvG9D/jve7WnpBmP2maXit2Wp3VX
+# 3EFjnkrewQEgtw7bKHR/T+Rz50W21yhobIEGLrebH7Glu+VrR3ORU6LmI9g3MMYZ
+# zadAZchudrujW4/u0TZ2/PeYZsQERHhAxdQ+CWac44YUJ/acBtk4hGxHvkm5zckj
+# OwhdJ+S7F+RJvbUaCHQwwow7NXBLcZxvnCO+JaqjDZo1myku/pVMQJR1NA==
 # SIG # End signature block
